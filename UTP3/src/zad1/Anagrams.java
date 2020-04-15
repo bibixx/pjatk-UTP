@@ -14,6 +14,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.TreeSet;
+import java.util.stream.Collectors;
 import java.util.List;
 import java.util.Map;
 
@@ -33,41 +34,75 @@ public class Anagrams {
 			}
 	
 			br.close();
-	
-			System.out.println(this.wordsList);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
-
-	public ArrayList<ArrayList<String>> getSortedByAnQty() {
-		HashMap<TreeSet<String>, ArrayList<String>> hm = new HashMap<TreeSet<String>, ArrayList<String>>();
+	
+	private boolean areWordsAnagrams(String w1, String w2) {
+		TreeSet<String> set1 = new TreeSet<String>();
+		TreeSet<String> set2 = new TreeSet<String>();
 		
-		for (String word : this.wordsList) {
-			TreeSet<String> ts = new TreeSet<String>();
-			ts.addAll(Arrays.asList(word.split("")));
-			
-			ArrayList<String> el = hm.get(ts);
-			if (el == null) {
-				el = new ArrayList<String>();
-				hm.put(ts, el);
-			}
-			
-			el.add(word);
-		}
+		set1.addAll(Arrays.asList(w1.split("")));
+		set2.addAll(Arrays.asList(w2.split("")));
 		
-		ArrayList<ArrayList<String>> out = new ArrayList<ArrayList<String>>();
-		
-		for (Map.Entry<TreeSet<String>, ArrayList<String>> entry : hm.entrySet()) {	
-			out.add(entry.getValue());
-		}
-		
-		Collections.sort(out, (el1, el2) -> el2.size() - el1.size());
-		
-		return out;
+		return set1.equals(set2);
 	}
 
-	public String getAnagramsFor(String next) {
-		return next + ": ";
+	public List<ArrayList<String>> getSortedByAnQty() {
+		ArrayList<ArrayList<String>> out = new ArrayList<ArrayList<String>>();
+
+		for (String word : this.wordsList) {
+			boolean found = false;
+
+			for (ArrayList<String> list: out) {
+				String listWord = list.get(0);
+				
+				if (this.areWordsAnagrams(listWord, word)) {
+					list.add(word);
+					found = true;
+					break;
+				}
+			}
+			
+			if (!found) {
+				ArrayList<String> newList = new ArrayList<String>();
+				newList.add(word);
+				out.add(newList);
+			}
+		}
+		
+		return out
+			.stream()
+			.sorted((el1, el2) -> {
+				int diff = el2.size() - el1.size();
+				
+				if (diff == 0) {
+					return el1.get(0).compareTo(el2.get(0));
+				}
+				
+				return diff;
+			})
+			.collect(Collectors.toList());
+	}
+
+	public String getAnagramsFor(String searchedWord) {
+		ArrayList<String> l = this
+			.getSortedByAnQty()
+			.stream()
+			.filter((el) -> this.areWordsAnagrams(searchedWord, el.get(0)))
+			.findAny()
+		    .orElse(null);
+		
+		if (l == null) {
+			return searchedWord + ": null";			
+		}
+		
+		List<String> lWithoutSearched = l
+			.stream()
+			.filter(el -> !el.equals(searchedWord))
+			.collect(Collectors.toList());
+		
+		return searchedWord + ": " + lWithoutSearched;
 	}
 }  
