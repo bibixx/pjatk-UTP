@@ -9,9 +9,7 @@ package zad2;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Comparator;
-import java.util.function.Consumer;
 
 public class CustomersPurchaseSortFind {
 	private ArrayList<Purchase> allRecords;

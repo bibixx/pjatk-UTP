@@ -6,8 +6,6 @@
 
 package zad2;
 
-import java.util.Arrays;
-
 public class Purchase {
 	public String id;
 	public String surname;
