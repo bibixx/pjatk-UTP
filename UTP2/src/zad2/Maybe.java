@@ -6,65 +6,40 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 public class Maybe <T> {
-	private T value;
+    T value;
+    public Maybe(){}
+    public Maybe(T value){
+        this.value = value;
+    }
+    public static<R> Maybe<R> of(R value){
+        return new Maybe(value);
+    }
+    public void ifPresent(Consumer cons){
+        if(value != null)
+            cons.accept(value);
+    }
+    public <R> Maybe<R> map(Function<T,R> func) {
+        return new Maybe((R)func.apply(value));
+    }
+    public T get() throws NoSuchElementException {
+        if(value == null)
+            new NoSuchElementException();
+        return value;
+    }
+    public boolean isPresent(){
+        return value != null;
+    }
 
-	public static <U> Maybe<U> of (U value) {
-		return new Maybe<U>(value);
-	}
-	
-	public Maybe (T value) {
-		this.value = value;
-	}
-	
-	void ifPresent(Consumer<T> cons) {
-		if (!this.isPresent()) {
-			return;
-		}
-		
-		cons.accept(this.value);
-	}
-	
-	<U> Maybe<U> map(Function<T, U> func) {
-		if (!this.isPresent()) {
-			return Maybe.of(null);
-		}
-		
-		return Maybe.of(func.apply(this.value));
-	}
-	
-	T get() {
-		if (!this.isPresent()) {
-			throw new NoSuchElementException("maybe is empty");
-		}
-		
-		return this.value;
-	}
-	
-	T orElse(T defVal) {
-		if (!this.isPresent()) {
-			return defVal;
-		}
-		
-		return this.value;
-	}
-	
-	boolean isPresent() {
-		return this.value != null;
-	}
-	
-	public Maybe<T> filter (Predicate<T> predicate) {
-		if (!this.isPresent() || predicate.test(this.value)) {
-            return this;
-        } else {
-        	return Maybe.of(null);
-        }
-	}
-	
-    @Override
-    public String toString() {
-        if(this.isPresent())
-            return "Maybe is empty";
+    public T orElse(T defVal) {
+        if(value == null)
+            return defVal;
         else
-            return "Maybe has value " + this.value;
+            return value;
+    }
+    public Maybe<T> filter (Predicate<T> pred) {
+        if(pred.test((T)this.value) || value == null)
+            return this;
+        else
+            return new Maybe();
     }
 }
