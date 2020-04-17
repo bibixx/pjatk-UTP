@@ -89,45 +89,63 @@ public class ProgLang {
 	public Map<String, LinkedHashSet<String>> getLangsMapSortedByNumOfProgs() {
 		return this.sorted(
 			this.getLangsMap(),
-			(e1, e2) -> e2.size() - e1.size()
+			(e1, e2) -> {
+				int diff = e2.getValue().size() - e1.getValue().size();
+						
+				if (diff == 0) {
+					return e1.getKey().compareTo(e2.getKey());
+				}
+				
+				return diff;
+			}
 		);
 	}
 
 	public Map<String, LinkedHashSet<String>> getProgsMapSortedByNumOfLangs() {
 		return this.sorted(
 			this.getProgsMap(),
-			(e1, e2) -> e2.size() - e1.size()
+			(e1, e2) -> {
+				int diff = e2.getValue().size() - e1.getValue().size();
+						
+				if (diff == 0) {
+					return e1.getKey().compareTo(e2.getKey());
+				}
+				
+				return diff;
+			}
 		);
 	}
 
 	public Map<String, LinkedHashSet<String>> getProgsMapForNumOfLangsGreaterThan(int i) {
 		return this.filtered(
 			this.getProgsMap(),
-			(value) -> value.size() > i
+			(value) -> value.getValue().size() > i
 		);
 	}
 
-	public <T, U> Map<T, U> filtered(Map<T, U> map, Predicate<U> fn) {
+	public <T, U> Map<T, U> filtered(Map<T, U> map, Predicate<Map.Entry<T, U>> fn) {
 		return map
 			.entrySet()
 			.stream()
-			.filter((entry) -> fn.test(entry.getValue()))
+			.filter(fn)
 			.collect(Collectors.toMap(
 			    Map.Entry::getKey,
 			    Map.Entry::getValue, 
-			    (oldValue, newValue) -> oldValue, LinkedHashMap::new
+			    (oldValue, newValue) -> oldValue,
+			    LinkedHashMap::new
 		    ));
 	}
 
-	public <T, U> Map<T, U> sorted(Map<T, U> map, Comparator<U> fn) {
+	public <T, U> Map<T, U> sorted(Map<T, U> map, Comparator<Map.Entry<T, U>> fn) {
 		return map
 			.entrySet()
 			.stream()
-			.sorted((entry1, entry2) -> fn.compare(entry1.getValue(), entry2.getValue()))
+			.sorted(fn)
 			.collect(Collectors.toMap(
 			    Map.Entry::getKey,
 			    Map.Entry::getValue, 
-			    (oldValue, newValue) -> oldValue, LinkedHashMap::new
+			    (oldValue, newValue) -> oldValue,
+			    LinkedHashMap::new
 		    ));
 	}
 }
