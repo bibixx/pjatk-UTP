@@ -18,7 +18,6 @@ public class Main {
 	
 	Map<String, List<String>> map = reader
 		.lines()
-		.filter(l -> l != null)
 		.collect(Collectors.groupingBy(
 			str -> {
 				char[] arr = str.toCharArray(); 
