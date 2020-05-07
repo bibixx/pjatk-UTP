@@ -15,35 +15,31 @@ public class Main {
   public static void main(String[] args) throws IOException {
 	URL url = new URL("http://wiki.puzzlers.org/pub/wordlists/unixdict.txt");
 	BufferedReader reader = new BufferedReader(new InputStreamReader(url.openStream()));
-	LinkedHashMap<String, ArrayList<String>> map = new LinkedHashMap<String, ArrayList<String>>();
 	
-	reader
+	Map<String, List<String>> map = reader
 		.lines()
-		.forEach(str -> {
-			char[] arr = str.toCharArray(); 
-		    Arrays.sort(arr);
-		    String sorted = String.valueOf(arr);
+		.filter(l -> l != null)
+		.collect(Collectors.groupingBy(
+			str -> {
+				char[] arr = str.toCharArray(); 
+			    Arrays.sort(arr);
+			    return String.valueOf(arr);
+			},
+			() -> new LinkedHashMap<String, List<String>>(),
+			Collectors.toList()
+		));
 
-			if (!map.containsKey(sorted)) {
-				map.put(sorted, new ArrayList<String>());
-			}
-
-			map.get(sorted).add(str);
-		});
-	
 	int maxSize = map
-		.entrySet()
+		.values()
 		.stream()
-		.max((e1, e2) -> Integer.compare(e1.getValue().size(), e2.getValue().size()))
-		.get()
-		.getValue()
-		.size();
+		.map(el -> el.size())
+		.max(Integer::compare)
+		.get();
 
 	map
-		.entrySet()
+		.values()
 		.stream()
-		.filter(e -> e.getValue().size() == maxSize)
-		.map(e -> e.getValue().stream().collect(Collectors.joining(" ")))
-		.forEach(e -> System.out.println(e));
+		.filter(e -> e.size() == maxSize)
+		.forEach(e -> System.out.println(e.stream().collect(Collectors.joining(" "))));
   }
 }
