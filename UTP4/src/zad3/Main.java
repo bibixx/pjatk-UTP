@@ -24,7 +24,7 @@ public class Main {
 		    Arrays.sort(arr);
 		    String sorted = String.valueOf(arr);
 
-			if (map.get(sorted) == null) {
+			if (!map.containsKey(sorted)) {
 				map.put(sorted, new ArrayList<String>());
 			}
 
@@ -43,7 +43,7 @@ public class Main {
 		.entrySet()
 		.stream()
 		.filter(e -> e.getValue().size() == maxSize)
-		.map(e -> e.getValue().stream().collect(Collectors.joining(", ")))
+		.map(e -> e.getValue().stream().collect(Collectors.joining(" ")))
 		.forEach(e -> System.out.println(e));
   }
 }
