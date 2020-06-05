@@ -15,12 +15,13 @@ public class GUI extends JFrame implements ActionListener {
     private JTable table;
     JLabel dropdownLabel;
 
-    private Travel t = new Travel("pl", "Japonia", "2015-09-01", "2015-10-01", "jezioro", "10000,20", "PLN");
-	private Travel[] data = { t, t, t, t, t, t, t, t };
+	private Travel[] data;
     
 	private static final long serialVersionUID = 1L;
 	
-	public GUI() {
+	public GUI(Travel[] data) {
+		this.data = data;
+
         JPanel panel = new JPanel();
         panel.setLayout(new BorderLayout());
 
@@ -42,7 +43,7 @@ public class GUI extends JFrame implements ActionListener {
         this.getContentPane().add(dropdownPanel, "North");
         this.getContentPane().add(scrollPane, "Center");
         
-        this.updateData(this.data, this.selectedLocale);
+        this.updateData(this.selectedLocale);
         this.setup();
     }
 	
@@ -87,11 +88,11 @@ public class GUI extends JFrame implements ActionListener {
         String selectedItem = (String)cb.getSelectedItem();
         
 		this.selectedLocale = this.getSupportedMap().get(selectedItem);
-		this.updateData(this.data, this.selectedLocale);
+		this.updateData(this.selectedLocale);
 	}
 	
-	public void updateData(Travel[] data, Locale locale) {
-		DbTableModel tableModel = new DbTableModel(data, locale);
+	public void updateData(Locale locale) {
+		DbTableModel tableModel = new DbTableModel(this.data, locale);
 		ResourceBundle bundle = ResourceBundle.getBundle("messages", locale);
 		this.table.setModel(tableModel);
 		this.dropdownLabel.setText(bundle.getString("language"));

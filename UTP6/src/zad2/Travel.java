@@ -45,6 +45,24 @@ public class Travel {
 		}
 	}
 	
+	public Travel(
+	    Locale locale,
+	    String country,
+	    Date startDate,
+	    Date endDate,
+	    String placeLabel,
+	    float price,
+	    Currency currency
+	) {
+	    this.locale = locale;
+	    this.country = country;
+	    this.startDate = startDate;
+	    this.endDate = endDate;
+	    this.placeLabel = placeLabel;
+	    this.price = price;
+	    this.currency = currency;
+	}
+	
 	private String getPlaceLabel(String place, Locale locale) {
 		ResourceBundle bundle = ResourceBundle.getBundle("messages", locale);
 		String[] labels = { "mountains", "sea", "lake" };
