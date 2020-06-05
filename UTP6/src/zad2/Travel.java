@@ -19,25 +19,26 @@ public class Travel {
 	private Currency currency;
 
 	public Travel(
-		String locale,
+		String localeString,
 		String country,
 		String startDate,
 		String endDate,
 		String place,
 		String price,
 		String currency
-	) {
-		Locale l = Locale.forLanguageTag(locale.replace('_', '-'));
+	) throws Exception {
+		Locale locale = Locale.forLanguageTag(localeString.replace('_', '-'));
+		this.checkSupportedLocales(locale);
 
 		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-		NumberFormat nf = NumberFormat.getInstance(l);
+		NumberFormat nf = NumberFormat.getInstance(locale);
 		
 	    try {
-	    	this.locale = l;
-		    this.country = CountryTranslator.translate(country, l, Locale.ENGLISH);
+	    	this.locale = locale;
+		    this.country = CountryTranslator.translate(country, locale, Locale.ENGLISH);
 			this.startDate = df.parse(startDate);
 			this.endDate = df.parse(endDate);
-			this.placeLabel = this.getPlaceLabel(place, l);
+			this.placeLabel = this.getPlaceLabel(place, locale);
 		    this.price = nf.parse(price).floatValue();
 		    this.currency = Currency.getInstance(currency);
 		} catch (ParseException e) {
@@ -53,7 +54,8 @@ public class Travel {
 	    String placeLabel,
 	    float price,
 	    Currency currency
-	) {
+	) throws Exception {
+		this.checkSupportedLocales(locale);
 	    this.locale = locale;
 	    this.country = country;
 	    this.startDate = startDate;
@@ -88,6 +90,20 @@ public class Travel {
 		String price = nf.format(this.price);
 
 		return country + ' ' + startDate + ' ' + endDate + ' ' + place + ' ' + price + ' ' + this.currency;
+	}
+	
+	private void checkSupportedLocales(Locale locale) throws Exception {
+		boolean found = false;
+
+		for (Locale supportedLocale : Constants.supportedLocales) {
+			if (locale.getLanguage().equals(supportedLocale.getLanguage())) {
+				found = true;
+			}
+		}
+		
+		if (!found) {
+			throw new Exception(locale.toLanguageTag() + " locale is not supported");
+		}
 	}
 	
 	public Locale getLocale() {

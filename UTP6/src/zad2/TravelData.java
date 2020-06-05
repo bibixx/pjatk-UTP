@@ -4,9 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.text.DateFormat;
-import java.text.NumberFormat;
-import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
@@ -28,11 +25,29 @@ public class TravelData {
 						e.printStackTrace();
 						return null;
 					}
-				}).filter(l -> l != null)
+				})
 		        .map(l -> {
+		        	if (l == null) {
+		        		return null;
+		        	}
+
 		        	String[] arr = l.split("\t");
-		        	return new Travel(arr[0], arr[1], arr[2], arr[3], arr[4], arr[5], arr[6]);
+		        	try {
+		        		return new Travel(
+	        				arr[0],
+	        				arr[1],
+	        				arr[2],
+	        				arr[3],
+	        				arr[4],
+	        				arr[5],
+	        				arr[6]
+	        			);		        		
+		        	} catch (Exception e) {
+		        		e.printStackTrace();
+		        		return null;
+		        	}
 		        })
+		        .filter(l -> l != null)
 		        .collect(Collectors.toList()); 
 		} catch (IOException e) {
 			e.printStackTrace();

@@ -10,8 +10,7 @@ import java.util.ResourceBundle;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;  
 public class GUI extends JFrame implements ActionListener {
-	private Locale selectedLocale = Locale.forLanguageTag("pl-pl");
-    private String[] supportedLocales = { "pl", "en" };
+	private Locale selectedLocale = Locale.getDefault();
     private JTable table;
     JLabel dropdownLabel;
 
@@ -36,6 +35,7 @@ public class GUI extends JFrame implements ActionListener {
         JComboBox<String> languageDropdown = new JComboBox<String>(
     		this.getDropdownItems()
         );
+        languageDropdown.setSelectedIndex(this.getInitialSelectedItem());
         languageDropdown.addActionListener(this);
         dropdownPanel.add(this.dropdownLabel, "West");
         dropdownPanel.add(languageDropdown, "Center");
@@ -59,8 +59,8 @@ public class GUI extends JFrame implements ActionListener {
 	private HashMap<String, Locale> getSupportedMap() {
 		HashMap<String, Locale> supportedLocales = new HashMap<String, Locale>();
         
-        for (int i = 0; i < this.supportedLocales.length; i++) {
-        	Locale supportedLocale = Locale.forLanguageTag(this.supportedLocales[i]);
+        for (int i = 0; i < Constants.supportedLocales.length; i++) {
+        	Locale supportedLocale = Constants.supportedLocales[i];
         	String langName = supportedLocale.getDisplayLanguage(supportedLocale);
 
         	supportedLocales.put(langName, supportedLocale);
@@ -70,10 +70,10 @@ public class GUI extends JFrame implements ActionListener {
 	}
 	
 	private String[] getDropdownItems() {
-		String[] supportedLocales = new String[this.supportedLocales.length];
+		String[] supportedLocales = new String[Constants.supportedLocales.length];
         
-        for (int i = 0; i < this.supportedLocales.length; i++) {
-        	Locale supportedLocale = Locale.forLanguageTag(this.supportedLocales[i]);
+        for (int i = 0; i < Constants.supportedLocales.length; i++) {
+        	Locale supportedLocale = Constants.supportedLocales[i];
         	String langName = supportedLocale.getDisplayLanguage(supportedLocale);
 
         	supportedLocales[i] = langName;
@@ -82,8 +82,25 @@ public class GUI extends JFrame implements ActionListener {
         return supportedLocales;
 	}
 	
+
+	private int getInitialSelectedItem() {
+		String[] dropdownItems = this.getDropdownItems();
+		String selectedLangName = this.selectedLocale.getDisplayLanguage(this.selectedLocale);
+        
+        for (int i = 0; i < dropdownItems.length; i++) {
+        	String dropdownItem = dropdownItems[i];
+        	
+        	if (dropdownItem.equals(selectedLangName)) {
+        		return i;
+        	}
+		}
+        
+        return 0;
+	}
+	
 	@Override
 	public void actionPerformed(ActionEvent e) {
+		@SuppressWarnings("unchecked")
 		JComboBox<String> cb = (JComboBox<String>) e.getSource();
         String selectedItem = (String)cb.getSelectedItem();
         

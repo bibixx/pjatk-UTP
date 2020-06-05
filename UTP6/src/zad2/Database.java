@@ -3,7 +3,6 @@ package zad2;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -48,7 +47,6 @@ public class Database {
 			Statement statement = this.con.createStatement();
 			statement.executeUpdate(dropStatement);
 			statement.executeUpdate(crestmt);
-			System.out.println("Table created");
 			statement.close();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -91,8 +89,6 @@ public class Database {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
-		System.out.println("Travels added");
 	}
 
 	private Travel[] getDataFromDb() {
@@ -126,11 +122,13 @@ public class Database {
 				));
 			}
 			
+			statement.close();
+			
 			Travel[] data = new Travel[travelList.size()];
 			travelList.toArray(data);
 			
 			return data;
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		
