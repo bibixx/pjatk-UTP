@@ -88,7 +88,6 @@ public class Database {
 	}
 
 	public void showGui() {
-		// TODO Auto-generated method stub
-		
+		new GUI();
 	}
 }

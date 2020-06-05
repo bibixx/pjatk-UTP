@@ -1,5 +1,6 @@
 package zad2;
 
+import java.text.DateFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -79,20 +80,46 @@ public class Travel {
 	  return this.country;
 	}
 	
+	public String getCountry(Locale locale) {
+	  return CountryTranslator.translate(this.country, Locale.ENGLISH, locale);
+	}
+	
 	public Date getStartDate() {
 	  return this.startDate;
 	}
 	
+	public String getStartDate(Locale locale) {
+		DateFormat fd = DateFormat.getDateInstance(DateFormat.SHORT, locale);
+		return fd.format(this.startDate);
+	}
+	
 	public Date getEndDate() {
 	  return this.endDate;
+	}
+
+	public String getEndDate(Locale locale) {
+		DateFormat fd = DateFormat.getDateInstance(DateFormat.SHORT, locale);
+		return fd.format(this.endDate);
 	}
 	
 	public String getPlaceLabel() {
 	  return this.placeLabel;
 	}
 	
+	public String getPlaceLabel(Locale locale) {
+		ResourceBundle bundle = ResourceBundle.getBundle("messages", locale);
+	    return bundle.getString(this.placeLabel);
+	}
+	
 	public float getPrice() {
 	  return this.price;
+	}
+	
+	public String getPrice(Locale locale) {
+		NumberFormat nf = NumberFormat.getCurrencyInstance(locale);
+		nf.setCurrency(this.currency);
+
+		return nf.format(this.price);
 	}
 	
 	public Currency getCurrency() {
