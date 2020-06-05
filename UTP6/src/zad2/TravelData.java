@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.text.NumberFormat;
 import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
@@ -12,7 +13,7 @@ import java.util.stream.Stream;
 public class TravelData {
 	private List<Travel> list;
 
-	public TravelData(File dataDir) {
+	public TravelData(File dataDir) {		
 		Stream<Path> paths;
 		try {
 			paths = Files.walk(dataDir.toPath());
