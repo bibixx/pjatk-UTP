@@ -11,9 +11,9 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;  
 public class GUI extends JFrame implements ActionListener {
 	private Locale selectedLocale = Locale.forLanguageTag("pl-pl");
-	private ResourceBundle bundle = ResourceBundle.getBundle("messages", this.selectedLocale);
     private String[] supportedLocales = { "pl", "en" };
     private JTable table;
+    JLabel dropdownLabel;
 
     private Travel t = new Travel("pl", "Japonia", "2015-09-01", "2015-10-01", "jezioro", "10000,20", "PLN");
 	private Travel[] data = { t, t, t, t, t, t, t, t };
@@ -21,29 +21,28 @@ public class GUI extends JFrame implements ActionListener {
 	private static final long serialVersionUID = 1L;
 	
 	public GUI() {
-		DbTableModel tableModel = new DbTableModel(this.data, this.selectedLocale);
-
         JPanel panel = new JPanel();
         panel.setLayout(new BorderLayout());
 
-        this.table = new JTable(tableModel);
+        this.table = new JTable();
         this.table.setFillsViewportHeight(true);
         JScrollPane scrollPane = new JScrollPane(this.table);
 
         JPanel dropdownPanel = new JPanel();
         dropdownPanel.setBorder(new EmptyBorder(0, 8, 0, 8));
         dropdownPanel.setLayout(new BorderLayout());
-        JLabel dropdownLabel = new JLabel(this.bundle.getString("language"));
+        this.dropdownLabel = new JLabel();
         JComboBox<String> languageDropdown = new JComboBox<String>(
     		this.getDropdownItems()
         );
         languageDropdown.addActionListener(this);
-        dropdownPanel.add(dropdownLabel, "West");
+        dropdownPanel.add(this.dropdownLabel, "West");
         dropdownPanel.add(languageDropdown, "Center");
         
         this.getContentPane().add(dropdownPanel, "North");
         this.getContentPane().add(scrollPane, "Center");
         
+        this.updateData(this.data, this.selectedLocale);
         this.setup();
     }
 	
@@ -84,7 +83,7 @@ public class GUI extends JFrame implements ActionListener {
 	
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		JComboBox<String> cb = (JComboBox<String>)e.getSource();
+		JComboBox<String> cb = (JComboBox<String>) e.getSource();
         String selectedItem = (String)cb.getSelectedItem();
         
 		this.selectedLocale = this.getSupportedMap().get(selectedItem);
@@ -93,6 +92,8 @@ public class GUI extends JFrame implements ActionListener {
 	
 	public void updateData(Travel[] data, Locale locale) {
 		DbTableModel tableModel = new DbTableModel(data, locale);
+		ResourceBundle bundle = ResourceBundle.getBundle("messages", locale);
 		this.table.setModel(tableModel);
+		this.dropdownLabel.setText(bundle.getString("language"));
 	}
 }
