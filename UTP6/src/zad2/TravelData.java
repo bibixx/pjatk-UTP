@@ -39,19 +39,18 @@ public class TravelData {
 		}
 	}
 	
-//	Japonia 2015-09-01 2015-10-01 jezioro 10 000,2 PLN
 	public List<String> getOffersDescriptionsList(String locale, String dateFormat) {
 		Locale l = Locale.forLanguageTag(locale.replace('_', '-'));
-		SimpleDateFormat df = (SimpleDateFormat) DateFormat.getDateInstance(DateFormat.SHORT, l);
-		NumberFormat nf = NumberFormat.getInstance(l);
-
-//		return new ArrayList<String>();
-		
+	
 		return this.list
 			.stream()
-			.map(t -> t.toLocalizedString(l, "yyyy-MM-dd"))
+			.map(t -> t.toLocalizedString(l))
 			.collect(Collectors.toList());
 		
+	}
+	
+	public List<Travel> getOffersList() {
+		return this.list;
 	}
 
 }
